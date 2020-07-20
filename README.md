@@ -3,11 +3,9 @@ This command-line tool makes it quick and easy to convert an SFSymbol into png/p
 
 ## Installation
 - Clone repo to your Mac
-- Install the following dependencies using pip
+- Install the dependencies using pip
 ```
-argparse
-cairosvg
-svgpathtools
+pip install -r requirements.txt
 ```
 - You may also have to install `cairo` and `libffi` (you can use brew for both)
 - Create a symlink for the scripts folder to your path variable
