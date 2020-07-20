@@ -1,4 +1,4 @@
-# SFSymbol Converter to png and pdf
+# SF Symbol Converter
 This command-line tool makes it quick and easy to convert an SFSymbol into png/pdf format for back-compatibility.
 
 ## Installation
