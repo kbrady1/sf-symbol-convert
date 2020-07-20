@@ -42,7 +42,7 @@ class SFSymbolParser(HTMLParser):
 parser = argparse.ArgumentParser(description='Convert an SFSymbol file type to pdf or png.')
 parser.add_argument("src", nargs = "?", help='Path to SFSymbol file')
 parser.add_argument("dest", nargs = '?', help='Path to save converted file. Include name but not format extension.')
-parser.add_argument("--symbol", nargs = "?", default='Regular-M', help='The specific symbol to use for export. Default is Regular-M')
+parser.add_argument("--style", nargs = "?", default='Regular-M', help='The specific style to use for export. Default is Regular-M')
 parser.add_argument("--type", choices = ["pdf", "png"], default='pdf')
 parser.add_argument("--png_size", type=int, nargs = "?", default='48', help='Used for png type, size of 1x image. 2x and 3x will be scaled.')
 args = parser.parse_args()
