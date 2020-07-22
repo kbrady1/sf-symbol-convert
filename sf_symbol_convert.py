@@ -41,7 +41,7 @@ class SFSymbolParser(HTMLParser):
 
 parser = argparse.ArgumentParser(description='Convert an SFSymbol file type to pdf or png.')
 parser.add_argument("src", nargs = "?", help='Path to SFSymbol file')
-parser.add_argument("dest", nargs = '?', help='Path to save converted file. Include name but not format extension.')
+parser.add_argument("--dest", nargs = '?', help='Path to save converted file. Include name but not format extension. If not provided, will use the original name')
 parser.add_argument("--style", nargs = "?", default='Regular-M', help='The specific style to use for export. Default is Regular-M')
 parser.add_argument("--type", choices = ["pdf", "png"], default='pdf')
 parser.add_argument("--png_size", type=int, nargs = "?", default='48', help='Used for png type, size of 1x image. 2x and 3x will be scaled.')
@@ -49,11 +49,10 @@ args = parser.parse_args()
 
 sfSymbolFile = open(args.src, 'r')
 
-parser = SFSymbolParser(args.symbol)
+parser = SFSymbolParser(args.style)
 parser.feed(sfSymbolFile.read())
 
-# print(template.format(args.symbol, parser.pathText))
-svg_text = template.format(args.symbol, parser.pathText)
+svg_text = template.format(args.style, parser.pathText)
 output = open('temp.svg', 'w')
 output.write(svg_text)
 output.close()
@@ -71,17 +70,21 @@ height = ymax - ymin
 svg_split_text = svg_text.split('<svg', 1)
 svg_with_view_box = '{}<svg\nviewBox="{} {} {} {}"{}'.format(svg_split_text[0], x, y, width, height, svg_split_text[1])
 
+destination = args.dest
+if destination is None:
+    destination = args.src.split('/')[-1].split('.svg')[0]
+
 if args.type == "pdf":
-    cairosvg.svg2pdf(bytestring=svg_with_view_box.encode('utf-8'), write_to='{}.pdf'.format(args.dest))
+    cairosvg.svg2pdf(bytestring=svg_with_view_box.encode('utf-8'), write_to='{}.pdf'.format(destination))
 elif args.type == "png":
     # Create 1x, 2x and 3x images
     atOnex = args.png_size
     atTwox = atOnex * 2
     atThreex = atOnex * 3
-    cairosvg.svg2png(bytestring=svg_with_view_box.encode('utf-8'), parent_width=atOnex, parent_height=atOnex, write_to='{}@1x.png'.format(args.dest))
+    cairosvg.svg2png(bytestring=svg_with_view_box.encode('utf-8'), parent_width=atOnex, parent_height=atOnex, write_to='{}@1x.png'.format(destination))
     cairosvg.svg2png(bytestring=svg_with_view_box.encode('utf-8'), parent_width=atTwox, parent_height=atTwox,
-                     write_to='{}@2x.png'.format(args.dest))
+                     write_to='{}@2x.png'.format(destination))
     cairosvg.svg2png(bytestring=svg_with_view_box.encode('utf-8'), parent_width=atThreex, parent_height=atThreex,
-                     write_to='{}@3x.png'.format(args.dest))
+                     write_to='{}@3x.png'.format(destination))
 
 os.remove('temp.svg')
